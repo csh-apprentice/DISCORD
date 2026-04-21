@@ -1,0 +1,63 @@
+{
+  "dataset": "phototourism",
+  "scene": "buckingham_palace",
+  "trial": 0,
+  "sample_stems": [
+    "27280196_135399295",
+    "29326647_5987374660",
+    "65611501_3408673027",
+    "76669421_1878873201",
+    "03295994_6248335133"
+  ],
+  "summary_artifact": "phototourism_nv5_t3.summary.json",
+  "n_views": 5,
+  "metrics": {
+    "raw_fscore_1cm": 0.0036072357702756426,
+    "confidence_topk_fscore_1cm": 0.009990630798930537,
+    "discord_fscore_1cm": 0.009890709691270854,
+    "discord_minus_conf_fscore_1cm": -9.99211076596826e-05,
+    "discord_minus_raw_fscore_1cm": 0.006283473920995212
+  },
+  "view_meta": [
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.40940502285957336,
+      "curve_index": 89,
+      "floor_keep_frac": 0.25157810872096587,
+      "final_keep_frac": 0.23473984188269903,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.6369361281394958,
+      "curve_index": 127,
+      "floor_keep_frac": 0.5395506658261761,
+      "final_keep_frac": 0.5267463162871326,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.6025233864784241,
+      "curve_index": 127,
+      "floor_keep_frac": 0.26774407060121347,
+      "final_keep_frac": 0.2473965802537231,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.795059084892273,
+      "curve_index": 164,
+      "floor_keep_frac": 0.39404710833282264,
+      "final_keep_frac": 0.3805540234111663,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.5101760625839233,
+      "curve_index": 102,
+      "floor_keep_frac": 0.38301056158199015,
+      "final_keep_frac": 0.37065637065637064,
+      "best_k": 6
+    }
+  ]
+}

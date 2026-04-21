@@ -1,0 +1,63 @@
+{
+  "dataset": "phototourism",
+  "scene": "colosseum_exterior",
+  "trial": 1,
+  "sample_stems": [
+    "61487996_549111716",
+    "36396557_5940895995",
+    "49584339_7531498726",
+    "71155233_263315835",
+    "24381233_2508611164"
+  ],
+  "summary_artifact": "phototourism_nv5_t3.summary.json",
+  "n_views": 5,
+  "metrics": {
+    "raw_fscore_1cm": 0.0016076184205085552,
+    "confidence_topk_fscore_1cm": 1.4394012090970157e-05,
+    "discord_fscore_1cm": 1.4394012090970157e-05,
+    "discord_minus_conf_fscore_1cm": 0.0,
+    "discord_minus_raw_fscore_1cm": -0.001593224408417585
+  },
+  "view_meta": [
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.5775516629219055,
+      "curve_index": 116,
+      "floor_keep_frac": 0.38165426871990576,
+      "final_keep_frac": 0.3672053189427707,
+      "best_k": 5
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.8552900552749634,
+      "curve_index": 177,
+      "floor_keep_frac": 0.36846662989520135,
+      "final_keep_frac": 0.3487203530060673,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.6484760642051697,
+      "curve_index": 133,
+      "floor_keep_frac": 0.5146166574738004,
+      "final_keep_frac": 0.499201369737084,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.46283799409866333,
+      "curve_index": 98,
+      "floor_keep_frac": 0.4189189189189189,
+      "final_keep_frac": 0.38881228166942455,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.31831344962120056,
+      "curve_index": 63,
+      "floor_keep_frac": 0.41383986026843167,
+      "final_keep_frac": 0.3345169148740577,
+      "best_k": 6
+    }
+  ]
+}

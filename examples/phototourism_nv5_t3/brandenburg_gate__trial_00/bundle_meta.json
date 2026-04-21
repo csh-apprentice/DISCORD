@@ -1,0 +1,63 @@
+{
+  "dataset": "phototourism",
+  "scene": "brandenburg_gate",
+  "trial": 0,
+  "sample_stems": [
+    "96503183_3428066956",
+    "21249390_5187843189",
+    "04257679_3822738446",
+    "49419209_4619801332",
+    "44083517_6916346024"
+  ],
+  "summary_artifact": "phototourism_nv5_t3.summary.json",
+  "n_views": 5,
+  "metrics": {
+    "raw_fscore_1cm": 1.7803018501786978e-05,
+    "confidence_topk_fscore_1cm": 0.0,
+    "discord_fscore_1cm": 0.0,
+    "discord_minus_conf_fscore_1cm": 0.0,
+    "discord_minus_raw_fscore_1cm": -1.7803018501786978e-05
+  },
+  "view_meta": [
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.9141778945922852,
+      "curve_index": 184,
+      "floor_keep_frac": 0.26968997058282773,
+      "final_keep_frac": 0.25232119874977016,
+      "best_k": 5
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.9353737235069275,
+      "curve_index": 187,
+      "floor_keep_frac": 0.5677694823102987,
+      "final_keep_frac": 0.5530789535891577,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.6292049884796143,
+      "curve_index": 126,
+      "floor_keep_frac": 0.25203112654850107,
+      "final_keep_frac": 0.21970826314455658,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.8929606676101685,
+      "curve_index": 178,
+      "floor_keep_frac": 0.3278709321566464,
+      "final_keep_frac": 0.29082735797021514,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.6217731237411499,
+      "curve_index": 126,
+      "floor_keep_frac": 0.10110538006290902,
+      "final_keep_frac": 0.0851843293928236,
+      "best_k": 6
+    }
+  ]
+}

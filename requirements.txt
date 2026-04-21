@@ -1,0 +1,10 @@
+numpy
+scipy
+matplotlib
+opencv-python
+Pillow
+scikit-learn
+torch
+torchvision
+trimesh
+gradio

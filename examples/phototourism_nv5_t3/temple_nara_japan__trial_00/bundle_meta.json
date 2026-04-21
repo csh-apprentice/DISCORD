@@ -1,0 +1,63 @@
+{
+  "dataset": "phototourism",
+  "scene": "temple_nara_japan",
+  "trial": 0,
+  "sample_stems": [
+    "25239289_8095977064",
+    "78400759_8601129319",
+    "31629950_8294669242",
+    "81900388_8606327666",
+    "79591885_6179828111"
+  ],
+  "summary_artifact": "phototourism_nv5_t3.summary.json",
+  "n_views": 5,
+  "metrics": {
+    "raw_fscore_1cm": 0.00030152714911182754,
+    "confidence_topk_fscore_1cm": 0.0008841014538379677,
+    "discord_fscore_1cm": 0.0008769551348947021,
+    "discord_minus_conf_fscore_1cm": -7.1463189432656535e-06,
+    "discord_minus_raw_fscore_1cm": 0.0005754279857828745
+  },
+  "view_meta": [
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.5079175233840942,
+      "curve_index": 102,
+      "floor_keep_frac": 0.3514432800147086,
+      "final_keep_frac": 0.2932984004412576,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.40702012181282043,
+      "curve_index": 81,
+      "floor_keep_frac": 0.4147419102776246,
+      "final_keep_frac": 0.40617530796102225,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.4229671359062195,
+      "curve_index": 86,
+      "floor_keep_frac": 0.4310841453698597,
+      "final_keep_frac": 0.37289330146473004,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.601020872592926,
+      "curve_index": 122,
+      "floor_keep_frac": 0.2851833976833977,
+      "final_keep_frac": 0.27102178709321567,
+      "best_k": 6
+    },
+    {
+      "floor_threshold": 1.00001,
+      "curvature_tolerance": 0.433586984872818,
+      "curve_index": 87,
+      "floor_keep_frac": 0.2582218698290127,
+      "final_keep_frac": 0.21290678433535576,
+      "best_k": 6
+    }
+  ]
+}

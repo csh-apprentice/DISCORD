@@ -1,0 +1,127 @@
+# DISCORD
+
+DISCORD is a post-hoc trust-segmentation pipeline for cluttered multi-view 3D reconstruction. It builds on top of VGGT and converts cross-view geometric disagreement into a binary trust mask that can be used both:
+
+- in **2D**, to highlight image regions that are likely to belong to stable scene geometry, and
+- in **3D**, to filter noisy geometry from feed-forward reconstructions.
+
+The current public code layout is intentionally limited to the active method path and the paper-facing evaluation path.
+
+## Repository Layout
+
+```text
+DISCORD/
+├── demo.py
+├── discord3d/
+│   ├── pipeline/
+│   ├── evaluation/
+│   ├── rendering/
+│   ├── third_party.py
+│   └── vggt_support.py
+├── scripts/
+├── examples/
+└── third_party/
+```
+
+### Core package
+
+- [discord3d/pipeline](discord3d/pipeline): canonical DISCORD pipeline
+- [discord3d/evaluation](discord3d/evaluation): benchmark and sweep utilities
+- [discord3d/rendering](discord3d/rendering): figure and camera-pose rendering helpers
+
+### Public entry points
+
+- [demo.py](demo.py): Gradio demo for `Baseline VGGT`, `Floor-only`, and `DISCORD`
+- [scripts/run_pipeline.sh](scripts/run_pipeline.sh): one-shot staged pipeline runner
+- [scripts/run_phototourism_sweeps.sh](scripts/run_phototourism_sweeps.sh): paper-facing sweep launcher
+- [scripts/export_curated_examples.sh](scripts/export_curated_examples.sh): export Gradio-ready example bundles from an evaluation summary
+- [scripts/smoke_test_examples.sh](scripts/smoke_test_examples.sh): lightweight regression check on bundled examples
+
+## Current Method
+
+The locked paper version uses:
+
+1. floor-only confidence preprocessing
+2. activated cross-view attention entropy
+3. bridge-enabled confidence-region partitioning
+4. quantile-based trust voting (`q = 0.9`)
+5. component-aware hole filling
+
+## External Dependencies
+
+This repository assumes local access to VGGT-related code. See:
+
+- [third_party/README.md](third_party/README.md)
+
+In our research workspace, the code falls back to sibling checkouts of:
+
+- `../RobustVGGT`
+- `../vggt`
+
+For a public release, these should ideally become documented submodules or explicit installation steps.
+
+## Dataset Path Defaults
+
+Some evaluation and export helpers still default to our local research layout, for example:
+
+- `/data/shihan/phototourism`
+- `/data/shihan/robustnerf`
+- `/data/shihan/llff_full`
+
+That is acceptable for the current research snapshot, but external users should treat these as defaults to override, either by:
+
+- passing CLI flags such as `--img-root` and `--colmap-root`, or
+- overriding environment variables in the provided shell wrappers
+
+## What Is Not Included Here
+
+This cleaned repo intentionally excludes:
+
+- historical research scripts
+- temporary Gradio outputs
+- paper drafting assets
+- large intermediate research outputs
+- full datasets and heavyweight run folders
+
+Those remain in the research workspace and are not part of the public-facing method path.
+
+## Recommended Workflow
+
+### Run the demo
+
+```bash
+python demo.py
+```
+
+### Run the staged pipeline on a folder of images
+
+```bash
+bash scripts/run_pipeline.sh <img_dir> <out_root>
+```
+
+### Run the Phototourism sweeps
+
+```bash
+bash scripts/run_phototourism_sweeps.sh
+python discord3d/evaluation/summarize_phototourism.py
+```
+
+### Export curated examples
+
+```bash
+bash scripts/export_curated_examples.sh
+```
+
+For a custom dataset root or a smaller selection:
+
+```bash
+IMG_ROOT=/path/to/phototourism \
+SELECTORS="colosseum_exterior:1 temple_nara_japan:0" \
+bash scripts/export_curated_examples.sh
+```
+
+### Run the bundled smoke test
+
+```bash
+bash scripts/smoke_test_examples.sh
+```
