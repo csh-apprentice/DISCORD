@@ -2,6 +2,11 @@
 
 This folder contains small curated bundles used by the DISCORD demo and smoke tests.
 
+These examples serve two roles:
+
+- they provide immediately loadable Gradio bundles, and
+- they act as a lightweight regression target for [scripts/smoke_test_examples.sh](../scripts/smoke_test_examples.sh)
+
 The current repo keeps only a lightweight subset of the internal Phototourism examples:
 
 - `brandenburg_gate__trial_00`

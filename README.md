@@ -7,6 +7,21 @@ DISCORD is a post-hoc trust-segmentation pipeline for cluttered multi-view 3D re
 
 The current public code layout is intentionally limited to the active method path and the paper-facing evaluation path.
 
+## Quick Start
+
+1. Install the Python dependencies from [requirements.txt](requirements.txt).
+2. Make the VGGT-related dependencies available as described in [third_party/README.md](third_party/README.md).
+3. Run the bundled smoke test on the curated examples:
+
+```bash
+bash scripts/smoke_test_examples.sh
+```
+
+If the smoke test passes, the fastest next checks are:
+
+- `python demo.py` for the interactive Gradio demo
+- `bash scripts/run_pipeline.sh <img_dir> <out_root>` for the staged CLI pipeline
+
 ## Repository Layout
 
 ```text
@@ -47,6 +62,8 @@ The locked paper version uses:
 4. quantile-based trust voting (`q = 0.9`)
 5. component-aware hole filling
 
+In the public demo and evaluation code, this corresponds to the bridge-enabled, quantile-trust version of DISCORD with the paper default `q = 0.9`.
+
 ## External Dependencies
 
 This repository assumes local access to VGGT-related code. See:
@@ -59,6 +76,11 @@ In our research workspace, the code falls back to sibling checkouts of:
 - `../vggt`
 
 For a public release, these should ideally become documented submodules or explicit installation steps.
+
+## Hardware Notes
+
+- The Gradio demo and the full Phototourism sweeps are intended for a CUDA-capable GPU.
+- The bundled smoke test automatically skips the heavy model run when CUDA is unavailable, so it can still serve as a lightweight regression check on CPU-only machines.
 
 ## Dataset Path Defaults
 
@@ -90,7 +112,7 @@ Those remain in the research workspace and are not part of the public-facing met
 ### Run the demo
 
 ```bash
-python demo.py
+python3 demo.py
 ```
 
 ### Run the staged pipeline on a folder of images
@@ -103,7 +125,7 @@ bash scripts/run_pipeline.sh <img_dir> <out_root>
 
 ```bash
 bash scripts/run_phototourism_sweeps.sh
-python discord3d/evaluation/summarize_phototourism.py
+python3 discord3d/evaluation/summarize_phototourism.py
 ```
 
 ### Export curated examples
