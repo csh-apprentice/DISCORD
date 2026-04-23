@@ -66,16 +66,15 @@ In the public demo and evaluation code, this corresponds to the bridge-enabled, 
 
 ## External Dependencies
 
-This repository assumes local access to VGGT-related code. See:
+DISCORD depends on [VGGT](https://github.com/facebookresearch/vggt), which is not vendored here. Clone it into `third_party/` and install its requirements:
 
-- [third_party/README.md](third_party/README.md)
+```bash
+git clone https://github.com/facebookresearch/vggt.git third_party/vggt
+pip install -r third_party/vggt/requirements.txt
+pip install -r third_party/vggt/requirements_demo.txt
+```
 
-In our research workspace, the code falls back to sibling checkouts of:
-
-- `../RobustVGGT`
-- `../vggt`
-
-For a public release, these should ideally become documented submodules or explicit installation steps.
+See [third_party/README.md](third_party/README.md) for the expected layout and the fallback path used in our research workspace.
 
 ## Hardware Notes
 

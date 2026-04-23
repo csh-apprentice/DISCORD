@@ -11,9 +11,7 @@ def _candidate_roots() -> list[Path]:
     repo_root = REPO_ROOT
     workspace_root = repo_root.parent
     return [
-        repo_root / "third_party" / "RobustVGGT",
         repo_root / "third_party" / "vggt",
-        workspace_root / "RobustVGGT",
         workspace_root / "vggt",
     ]
 
@@ -21,7 +19,6 @@ def _candidate_roots() -> list[Path]:
 def setup_vggt_paths() -> None:
     candidates = _candidate_roots()
     existing = [p for p in candidates if p.exists()]
-    # Keep RobustVGGT ahead of the vanilla VGGT checkout so the modified
     # aggregator implementation remains the active one.
     for path in reversed([str(p) for p in existing]):
         if path not in sys.path:

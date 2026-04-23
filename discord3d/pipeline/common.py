@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import torch.nn.functional as F
 from PIL import Image
 from sklearn.mixture import GaussianMixture
 from torchvision import transforms as TF

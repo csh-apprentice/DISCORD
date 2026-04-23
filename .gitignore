@@ -14,3 +14,7 @@ outputs/
 
 .gradio/
 .cache/
+reports
+
+# model used for segmentation
+*.onnx

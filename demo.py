@@ -14,7 +14,6 @@ import json
 import os
 import cv2
 import math
-import sys
 import shutil
 import glob
 import gc
@@ -27,8 +26,6 @@ import torch
 import torch.nn.functional as F
 
 # Gradio stages uploads into its own temp cache before our app copies files into
-# input_images_*. On this machine /tmp/gradio may be owned by another user
-# (e.g. nobody), so force a project-local writable temp dir.
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _GRADIO_TEMP_DIR = os.path.join(_HERE, "gradio_tmp")
 os.makedirs(_GRADIO_TEMP_DIR, exist_ok=True)
@@ -57,7 +54,7 @@ from discord3d.pipeline.runtime import (
     parse_entropy_layer,
 )
 
-# ── device / dtype ──────────────────────────────────────────────────────────
+# device / dtype 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 dtype = (
     torch.bfloat16
@@ -174,10 +171,7 @@ LIVE_CAMERA_POSE_JS = r"""
 """
 
 
-# ────────────────────────────────────────────────────────────────────────────
 # Core helpers
-# ────────────────────────────────────────────────────────────────────────────
-
 def _compute_view_scores(images_dev, attn_a=0.5, cos_a=0.5):
     """
     First forward pass. Returns combined_scores (N,) and raw predictions.
@@ -202,7 +196,8 @@ def _compute_view_scores(images_dev, attn_a=0.5, cos_a=0.5):
 
     with torch.inference_mode():
         with torch.cuda.amp.autocast(dtype=dtype):
-            predictions, aggregated_tokens_list = model(images_dev.unsqueeze(0))
+            aggregated_tokens_list, _ = model.aggregator(images_dev.unsqueeze(0))
+            predictions = model(images_dev.unsqueeze(0))
 
     for h in handles:
         h.remove()
@@ -534,10 +529,8 @@ def _apply_floor_only_method(predictions, images, valid_masks, names, run_dir, c
     return predictions, gallery
 
 
-# ────────────────────────────────────────────────────────────────────────────
-# File handling
-# ────────────────────────────────────────────────────────────────────────────
 
+# File handling
 def handle_uploads(input_video, input_images):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     target_dir = str(_UPLOAD_ROOT / f"input_images_{timestamp}")
@@ -591,10 +584,7 @@ def on_upload(input_video, input_images):
     )
 
 
-# ────────────────────────────────────────────────────────────────────────────
 # Main reconstruction callback
-# ────────────────────────────────────────────────────────────────────────────
-
 def gradio_reconstruct(
     target_dir,
     method,
@@ -667,13 +657,12 @@ def gradio_reconstruct(
     image_hw = tuple(int(d) for d in images.shape[-2:])
     images_dev = images.to(device, dtype=dtype)
 
-    # ── Route by method ──────────────────────────────────────────────────────
-
+    # Route by method
     if method == "Baseline VGGT":
         # Plain VGGT — no intervention
         with torch.inference_mode():
             with torch.cuda.amp.autocast(dtype=dtype):
-                predictions, _ = model(images_dev.unsqueeze(0))
+                predictions = model(images_dev.unsqueeze(0))
         predictions = _postprocess_predictions(predictions, image_hw)
         predictions["image_files"] = np.array([os.path.basename(p) for p in image_paths])
         gallery = [(p, f"[{i}] {n}") for i, (p, n) in enumerate(zip(image_paths, names))]
@@ -683,7 +672,7 @@ def gradio_reconstruct(
     elif method == "Floor-only":
         with torch.inference_mode():
             with torch.cuda.amp.autocast(dtype=dtype):
-                predictions, _ = model(images_dev.unsqueeze(0))
+                predictions = model(images_dev.unsqueeze(0))
 
         predictions = _postprocess_predictions(predictions, image_hw)
         predictions["image_files"] = np.array([os.path.basename(p) for p in image_paths])
@@ -694,7 +683,7 @@ def gradio_reconstruct(
     elif method == "DISCORD":
         with torch.inference_mode():
             with torch.cuda.amp.autocast(dtype=dtype):
-                predictions, _ = model(images_dev.unsqueeze(0))
+                predictions = model(images_dev.unsqueeze(0))
 
         predictions = _postprocess_predictions(predictions, image_hw)
         predictions["image_files"] = np.array([os.path.basename(p) for p in image_paths])
@@ -718,10 +707,10 @@ def gradio_reconstruct(
     else:
         return None, f"Unsupported method in the public DISCORD demo: {method}", None, None, None, None
 
-    # ── Defensive: ensure world_points and world_points_conf have matching S ──
+    # Defensive: ensure world_points and world_points_conf have matching S
     _align_prediction_shapes(predictions)
 
-    # ── Save predictions into run_dir (settings-specific, no collision) ──────
+    # Save predictions into run_dir (settings-specific, no collision)
     np.savez(os.path.join(run_dir, "predictions.npz"), **{
         k: v for k, v in predictions.items() if isinstance(v, np.ndarray)
     })
@@ -836,10 +825,8 @@ def on_method_change(method):
     )
 
 
-# ────────────────────────────────────────────────────────────────────────────
-# Gradio UI
-# ────────────────────────────────────────────────────────────────────────────
 
+# Gradio UI
 theme = gr.themes.Ocean()
 theme.set(
     checkbox_label_background_fill_selected="*button_primary_background_fill",
@@ -867,7 +854,7 @@ with gr.Blocks(
     camera_pose_timer = gr.Timer(value=0.75, active=True)
 
     gr.HTML("""
-    <h1>DISCORD — Distractor-Aware Trust Segmentation for Feed-Forward 3D Reconstruction</h1>
+    <h1>DISCORD — Cross-View Geometric Disagreement for Robust Feed-Forward 3D Reconstruction</h1>
     <p>
       Upload a multi-view image collection, inspect a baseline VGGT reconstruction,
       and compare it against floor-only confidence filtering and the final DISCORD pipeline.
@@ -878,7 +865,7 @@ with gr.Blocks(
     """)
 
     with gr.Row():
-        # ── Left column: upload + controls ─────────────────────────────────
+        # Left column: upload + controls
         with gr.Column(scale=2):
             input_video  = gr.Video(label="Upload Video", interactive=True)
             input_images = gr.File(file_count="multiple", label="Upload Images",
@@ -921,7 +908,7 @@ with gr.Blocks(
                 label="Attention Weight α", visible=False,
             )
 
-            # ── Legacy hidden controls kept only for callback compatibility ──
+            # Legacy hidden controls kept only for callback compatibility 
             cond_views = gr.CheckboxGroup(
                 choices=[], value=[],
                 label="Conditioning Views (C) — select target appearance",
@@ -974,7 +961,7 @@ with gr.Blocks(
                 visible=False,
             )
 
-        # ── Right column: 3-D viewer ────────────────────────────────────
+        # Right column: 3-D viewer
         with gr.Column(scale=4):
             log_output = gr.Markdown(
                 "Upload images, select a method, then click **Reconstruct**.",
@@ -1019,8 +1006,6 @@ with gr.Blocks(
                                                 value=False)
                     mask_white_bg = gr.Checkbox(label="Filter White Background",
                                                 value=False)
-
-    # ── Wiring ────────────────────────────────────────────────────────────
 
     # Method toggle → show/hide relevant controls
     method.change(

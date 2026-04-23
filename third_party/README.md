@@ -1,38 +1,25 @@
 # Third-Party Dependencies
 
-DISCORD depends on VGGT-related code that is not duplicated inside this cleaned repository.
+DISCORD depends on the VGGT codebase, which is not vendored into this repository:
 
-During development, we resolved these dependencies from sibling checkouts:
+- [VGGT](https://github.com/facebookresearch/vggt) — the baseline feed-forward reconstruction model
 
-- `../RobustVGGT`
-- `../vggt`
+## Installation
 
-The helper in [discord3d/third_party.py](../discord3d/third_party.py) first looks for local copies under:
+Clone VGGT into this `third_party/` directory and install its requirements:
 
-- `third_party/RobustVGGT`
-- `third_party/vggt`
+```bash
+git clone https://github.com/facebookresearch/vggt.git third_party/vggt
+pip install -r third_party/vggt/requirements.txt
+pip install -r third_party/vggt/requirements_demo.txt
+```
 
-and then falls back to the sibling workspace layout above.
-
-The expected local layout is:
+The expected layout is:
 
 ```text
 DISCORD/
 ├── third_party/
-│   ├── RobustVGGT/
 │   └── vggt/
 ```
 
-If you prefer to keep these checkouts outside the repo, the current code also accepts the research-workspace layout:
-
-```text
-../RobustVGGT
-../vggt
-```
-
-For a public release, the cleanest follow-up is one of:
-
-1. add these dependencies as documented git submodules, or
-2. provide explicit installation instructions and import against installed packages.
-
-At the moment, this cleaned repo keeps the dependency resolution lightweight so we can reorganize the codebase without breaking the current research environment.
+The helper in [discord3d/third_party.py](../discord3d/third_party.py) adds `third_party/vggt` to `sys.path` at import time. If that directory is missing, it falls back to a sibling checkout at `../vggt` relative to the repository root — this is a convenience for our local research workspace and is not required for a fresh install.
