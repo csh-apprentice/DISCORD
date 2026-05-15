@@ -49,6 +49,8 @@ DISCORD/
 - [demo.py](demo.py): Gradio demo for `Baseline VGGT`, `Floor-only`, and `DISCORD`
 - [scripts/run_pipeline.sh](scripts/run_pipeline.sh): one-shot staged pipeline runner
 - [scripts/run_phototourism_sweeps.sh](scripts/run_phototourism_sweeps.sh): paper-facing sweep launcher
+- [scripts/run_l16h02_phototourism_entropy.sh](scripts/run_l16h02_phototourism_entropy.sh): L16 h02 entropy heatmaps and guided-Otsu masks on Phototourism bundles
+- [scripts/run_l16h02_robustnerf_mass.sh](scripts/run_l16h02_robustnerf_mass.sh): L16 h02 mass heatmaps plus pseudo-label AUROC/AP on RobustNeRF clean/clutter pairs
 - [scripts/export_curated_examples.sh](scripts/export_curated_examples.sh): export Gradio-ready example bundles from an evaluation summary
 - [scripts/smoke_test_examples.sh](scripts/smoke_test_examples.sh): lightweight regression check on bundled examples
 
@@ -63,6 +65,22 @@ The locked paper version uses:
 5. component-aware hole filling
 
 In the public demo and evaluation code, this corresponds to the bridge-enabled, quantile-trust version of DISCORD with the paper default `q = 0.9`.
+
+## L16 h02 Research Branch
+
+The newer attention-head branch is grouped in:
+
+- [discord3d/pipeline/head_signals.py](discord3d/pipeline/head_signals.py): generic per-layer/per-head cross-view entropy and self/cross attention-mass extraction
+- [discord3d/pipeline/l16h02.py](discord3d/pipeline/l16h02.py): the current L16 h02 wrappers
+- [discord3d/evaluation/phototourism_l16h02_entropy.py](discord3d/evaluation/phototourism_l16h02_entropy.py): Phototourism entropy visualization and mask summary
+- [discord3d/evaluation/robustnerf_l16h02_mass.py](discord3d/evaluation/robustnerf_l16h02_mass.py): RobustNeRF mass visualization and pseudo-label metrics
+
+The working hypothesis is deliberately simple:
+
+- **Phototourism:** use L16 h02 cross-view attention entropy as a low-resolution trust signal, lift it with the same RGB-guided Otsu + confidence-floor pipeline, and compare it against the older L8 PCA1 path.
+- **RobustNeRF:** use L16 h02 cross-view support deficit, currently `1 - cross_mass`, as the mass-side clutter signal. The script also reports `log(self_mass / cross_mass)`, `self_mass`, `self - cross`, and entropy as ablations.
+
+These scripts are research-facing, not yet the locked demo default. They are intentionally thin wrappers over package code so collaborators can inspect or modify the method in one place.
 
 ## External Dependencies
 
@@ -88,6 +106,7 @@ Some evaluation and export helpers still default to our local research layout, f
 - `/data/shihan/phototourism`
 - `/data/shihan/robustnerf`
 - `/data/shihan/llff_full`
+- `/home/shihan/project/DISCORD/datasets/examples/phototourism_nv5_t3`
 
 That is acceptable for the current research snapshot, but external users should treat these as defaults to override, either by:
 
@@ -126,6 +145,52 @@ bash scripts/run_pipeline.sh <img_dir> <out_root>
 bash scripts/run_phototourism_sweeps.sh
 python3 discord3d/evaluation/summarize_phototourism.py
 ```
+
+### Visualize L16 h02 entropy on Phototourism
+
+From the repo root:
+
+```bash
+DISCORD_DEVICE=cuda:1 bash scripts/run_l16h02_phototourism_entropy.sh
+```
+
+Useful smaller run:
+
+```bash
+DISCORD_DEVICE=cuda:1 bash scripts/run_l16h02_phototourism_entropy.sh \
+  --bundles colosseum_exterior__trial_01,taj_mahal__trial_00
+```
+
+Outputs are written to `outputs/experiments/l16h02_phototourism_entropy`:
+
+- `by_case/*_L16h02_entropy.png`: input, L16 h02 entropy, RGB-guided trust, confidence floor, Otsu/final overlays, and L8 PCA1 comparison
+- `phototourism_l16h02_entropy_summary.csv`: keep fractions and L8-vs-L16 mask IoU
+- `summary.json`: command configuration and output paths
+
+### Visualize and score L16 h02 mass on RobustNeRF
+
+From the repo root:
+
+```bash
+DISCORD_DEVICE=cuda:1 bash scripts/run_l16h02_robustnerf_mass.sh
+```
+
+Useful smaller run:
+
+```bash
+DISCORD_DEVICE=cuda:1 bash scripts/run_l16h02_robustnerf_mass.sh \
+  --scenes android,statue \
+  --n_pairs 4
+```
+
+Outputs are written to `outputs/experiments/l16h02_robustnerf_mass`:
+
+- `by_case/*_L16h02_mass.png`: clean target, clutter target, pseudo label, `1 - cross_mass`, `log(self/cross)`, self mass, entropy, and top-tail overlays
+- `robustnerf_l16h02_mass_metrics.csv`: AUROC/AP against clean-vs-clutter pseudo labels
+- `robustnerf_l16h02_mass_selectivity.csv`: unsupervised tail/concentration diagnostics
+- `summary.json`: aggregate metric summary and per-case metadata
+
+The default mass statistic for the method is `one_minus_cross` because the controlled LLFF synthetic checks showed it ties the log-ratio version while giving a cleaner mechanism: a patch is risky when L16 h02 gives it little cross-view support.
 
 ### Export curated examples
 
